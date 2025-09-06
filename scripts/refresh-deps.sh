@@ -1,99 +1,86 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Usage:
-#   ./scripts/refresh-deps-linux.sh
 # Options:
-#   --keep-lock   Keep existing pnpm-lock.yaml (more conservative)
-#   --no-audit    Skip pnpm audit
-#   --quiet-fund  Suppress funding messages (adds 'fund=false' to .npmrc)
-#   --conservative Use range-respecting updates (no -L latest)
+#   --no-audit     Skip pnpm audit (faster)
+#   --dry-run      Show actions without changing anything
+#   --npm-only     Force npm -g for pnpm instead of Corepack
 
-PNPM_MIN="11.0.0"
-KEEP_LOCK=false
+TARGET_PNPM="10.15.1"
 RUN_AUDIT=true
-QUIET_FUND=false
-CONSERVATIVE=false
+DRY_RUN=false
+NPM_ONLY=false
 
 for arg in "$@"; do
   case "$arg" in
-      --keep-lock) KEEP_LOCK=true ;;
-          --no-audit) RUN_AUDIT=false ;;
-              --quiet-fund) QUIET_FUND=true ;;
-                  --conservative) CONSERVATIVE=true ;;
-                      *) echo "Unknown option: $arg"; exit 2 ;;
-                        esac
-                        done
+      --no-audit) RUN_AUDIT=false ;;
+          --dry-run) DRY_RUN=true ;;
+              --npm-only) NPM_ONLY=true ;;
+                  *) echo "Unknown option: $arg"; exit 2 ;;
+                    esac
+                    done
 
-                        # --- Checks ---
-                        if ! command -v pnpm >/dev/null 2>&1; then
-                          echo "pnpm not found in PATH"; exit 1
-                          fi
+                    say() { printf '%b\n' "$*"; }
+                    run() { $DRY_RUN && say "DRY-RUN: $*" || eval "$@"; }
 
-                          PNPM_VER="$(pnpm -v)"
-                          # version_ge A B -> returns true if A >= B
-                          version_ge() { printf '%s\n%s\n' "$2" "$1" | sort -C -V; }
-                          if ! version_ge "$PNPM_VER" "$PNPM_MIN"; then
-                            echo "Found pnpm $PNPM_VER, need >= $PNPM_MIN"; exit 1
-                            fi
+                    # --- 1) Ensure pnpm@10.15.1 globally (Corepack preferred) ---
+                    if ! $NPM_ONLY && command -v corepack >/dev/null 2>&1; then
+                      say "🔧 Using Corepack to activate pnpm@${TARGET_PNPM}…"
+                        run "corepack enable"
+                          run "corepack prepare pnpm@${TARGET_PNPM} --activate"
+                          else
+                            say "🔧 Installing pnpm@${TARGET_PNPM} globally via npm…"
+                              command -v npm >/dev/null 2>&1 || { say "❌ npm not found in PATH"; exit 1; }
+                                run "npm install -g pnpm@${TARGET_PNPM}"
+                                fi
 
-                            ROOT="$(pwd)"
-
-                            # --- Optional: quiet funding messages ---
-                            if $QUIET_FUND; then
-                              if ! grep -q '^fund=' .npmrc 2>/dev/null; then
-                                  printf '\nfund=false\n' >> .npmrc || true
+                                # Verify
+                                PNPM_PATH="$(command -v pnpm || true)"
+                                PNPM_VER="$(pnpm -v 2>/dev/null || true)"
+                                say "🔎 pnpm path: ${PNPM_PATH:-<not found>}"
+                                say "🔎 pnpm version: ${PNPM_VER:-<unknown>}"
+                                if [ "$PNPM_VER" != "$TARGET_PNPM" ]; then
+                                  say "❌ pnpm version is '$PNPM_VER' (expected ${TARGET_PNPM}). Aborting."
+                                    exit 1
                                     fi
-                                    fi
 
-                                    # --- Clean installs (optional lock reset) ---
-                                    if ! $KEEP_LOCK; then
-                                      rm -f pnpm-lock.yaml
-                                      fi
-
-                                      # Remove node_modules (root and workspace packages/*)
-                                      if command -v pnpm >/dev/null 2>&1; then
-                                        pnpm dlx rimraf "node_modules" "packages/*/node_modules" 2>/dev/null || true
+                                    # --- 2) Remove accidentally installed local pnpm dependency ---
+                                    if [ -f package.json ] && grep -q '"pnpm"\s*:' package.json; then
+                                      say "🧽 Removing local 'pnpm' from package.json…"
+                                        run "pnpm remove pnpm || true"
                                         fi
-                                        pnpm store prune || true
 
-                                        # --- Update to latest / conservative ---
-                                        UPDATE_FLAGS=()
-                                        if [ -f "pnpm-workspace.yaml" ]; then
-                                          UPDATE_FLAGS+=("-r")
-                                          fi
-                                          if $CONSERVATIVE; then
-                                            # Range-respecting (stays within your ^/~ ranges)
-                                              pnpm up "${UPDATE_FLAGS[@]}"
-                                              else
-                                                # Latest published, updates package.json ranges
-                                                  pnpm up "${UPDATE_FLAGS[@]}" -L latest
-                                                  fi
+                                        # --- 3) Clean node_modules, lockfile, and prune store ---
+                                        if [ -d node_modules ] || [ -f pnpm-lock.yaml ]; then
+                                          say "🧹 Deleting node_modules and pnpm-lock.yaml…"
+                                            run "rm -rf node_modules pnpm-lock.yaml"
+                                            else
+                                              say "✅ Nothing to clean (no node_modules or lockfile)."
+                                              fi
 
-                                                  # --- Deduplicate and reinstall fresh ---
-                                                  if [ -f "pnpm-workspace.yaml" ]; then
-                                                    pnpm dedupe -r || true
-                                                    else
-                                                      pnpm dedupe || true
-                                                      fi
+                                              say "🗃️  Pruning pnpm store (optional)…"
+                                              run "pnpm store prune || true"
 
-                                                      pnpm install --force
+                                              # --- 4) Fresh install to regenerate the lockfile with pnpm 10.15.1 ---
+                                              say "📦 Installing dependencies fresh (this regenerates pnpm-lock.yaml)…"
+                                              run "pnpm install --force"
 
-                                                      # --- Optional audit ---
-                                                      if $RUN_AUDIT; then
-                                                        pnpm audit --prod || true
-                                                        fi
+                                              # --- 5) Deduplicate (workspace-aware) ---
+                                              if [ -f pnpm-workspace.yaml ]; then
+                                                say "🧩 Workspace detected — running dedupe -r…"
+                                                  run "pnpm dedupe -r || true"
+                                                  else
+                                                    run "pnpm dedupe || true"
+                                                    fi
 
-                                                        # --- Build/test if scripts exist (best-effort) ---
-                                                        HAS_SCRIPTS="$(pnpm -s run || true)"
-                                                        if echo "$HAS_SCRIPTS" | grep -qE '(^|\s)(build)(\s|:)'; then
-                                                          pnpm -r build || true
+                                                    # --- 6) Optional security check ---
+                                                    if $RUN_AUDIT; then
+                                                      say "🔐 pnpm audit (prod)…"
+                                                        run "pnpm audit --prod || true"
+                                                        else
+                                                          say "⏭️ Skipping audit (--no-audit)."
                                                           fi
-                                                          if echo "$HAS_SCRIPTS" | grep -qE '(^|\s)(test)(\s|:)'; then
-                                                            pnpm -r test || true
-                                                            fi
 
-                                                            echo
-                                                            echo "✅ Dependency refresh complete on CURRENT BRANCH."
-                                                            echo "   pnpm: $PNPM_VER"
-                                                            echo "   Options: keep-lock=$KEEP_LOCK, conservative=$CONSERVATIVE, audit=$RUN_AUDIT, quiet-fund=$QUIET_FUND"
+                                                          say ""
+                                                          say "✅ Lockfile reset complete with pnpm@${TARGET_PNPM}."
+                                                          say "   You can now build/test as usual."

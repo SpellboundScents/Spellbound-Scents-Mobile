@@ -39,8 +39,5 @@
       "esbuild",
       "workerd"
     ]
-  },
-  "dependencies": {
-    "pnpm": "^10.15.1"
   }
 }
