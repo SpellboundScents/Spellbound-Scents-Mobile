@@ -1,96 +1,82 @@
-<img src=".github/splash.png" alt="Tauri" />
+# 🎃 Spellbound Scents App — *coming soon!* 🕯️✨
 
-[![status](https://img.shields.io/badge/status-stable-blue.svg)](https://github.com/tauri-apps/tauri/tree/dev)
-[![License](https://img.shields.io/badge/License-MIT%20or%20Apache%202-green.svg)](https://opencollective.com/tauri)
-[![test core](https://img.shields.io/github/actions/workflow/status/tauri-apps/tauri/test-core.yml?label=test%20core&logo=github)](https://github.com/tauri-apps/tauri/actions/workflows/test-core.yml)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ftauri-apps%2Ftauri.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Ftauri-apps%2Ftauri?ref=badge_shield)
-[![Chat Server](https://img.shields.io/badge/chat-discord-7289da.svg)](https://discord.com/invite/tauri)
-[![website](https://img.shields.io/badge/website-tauri.app-purple.svg)](https://tauri.app)
-[![https://good-labs.github.io/greater-good-affirmation/assets/images/badge.svg](https://good-labs.github.io/greater-good-affirmation/assets/images/badge.svg)](https://good-labs.github.io/greater-good-affirmation)
-[![support](https://img.shields.io/badge/sponsor-Open%20Collective-blue.svg)](https://opencollective.com/tauri)
+<img src="public/logo.png" alt="Spellbound Scents" width="180" />
 
-## Introduction
+A cozy, kawaii-Halloween companion app for **Spellbound Scents Wax Co.**  
+*Brooms are sweeping, cauldrons are bubbling… the app is brewing!*
 
-Tauri is a framework for building tiny, blazingly fast binaries for all major desktop platforms. Developers can integrate any front-end framework that compiles to HTML, JS and CSS for building their user interface. The backend of the application is a rust-sourced binary with an API that the front-end can interact with.
+---
 
-The user interface in Tauri apps currently leverages [`tao`](https://docs.rs/tao) as a window handling library on macOS, Windows, Linux, Android and iOS. To render your application, Tauri uses [WRY](https://github.com/tauri-apps/wry), a library which provides a unified interface to the system webview, leveraging WKWebView on macOS & iOS, WebView2 on Windows, WebKitGTK on Linux and Android System WebView on Android.
+### 🧪 Prerequisites
 
-To learn more about the details of how all of these pieces fit together, please consult this [ARCHITECTURE.md](https://github.com/tauri-apps/tauri/blob/dev/ARCHITECTURE.md) document.
+- **Rust** (stable)
+- **Node.js** (18+ recommended) + **pnpm**
+- **Tauri CLI v2**
+- **Android builds**: Android Studio / command-line SDK, Java 17, platform tools
+- **iOS builds** (macOS): Xcode 15+, CocoaPods
 
-## Getting Started
+## Run the setup script first:
 
-If you are interested in making a tauri app, please visit the [documentation website](https://tauri.app).
-
-The quickest way to get started is to install the [prerequisites](https://v2.tauri.app/start/prerequisites/) for your system and create a new project with [`create-tauri-app`](https://github.com/tauri-apps/create-tauri-app/#usage). For example with `npm`:
-
-```sh
-npm create tauri-app@latest
+# Linux
+```bash
+chmod +x scripts/prereqs-linux.sh
+./scripts/prereqs-linux.sh
+```
+# macOS
+```bash
+chmod +x scripts/prereqs-macos.sh
+./scripts/prereqs-macos.sh
+```
+# Windows (PowerShell, as Administrator)
+```bash
+Set-ExecutionPolicy Bypass -Scope Process -Force
+.\scripts\prereqs-windows.ps1
 ```
 
-## Features
+---
 
-The list of Tauri's features includes, but is not limited to:
+### 📦 Install deps
+```bash
+pnpm i
+```
 
-- Built-in app bundler to create app bundles in formats like `.app`, `.dmg`, `.deb`, `.rpm`, `.AppImage` and Windows installers like `.exe` (via NSIS) and `.msi` (via WiX).
-- Built-in self updater (desktop only)
-- System tray icons
-- Native notifications
-- Native WebView Protocol (tauri doesn't create a localhost http(s) server to serve the WebView contents)
-- GitHub action for streamlined CI
-- VS Code extension
+---
 
-### Platforms
+### 📱 Build (Android)
 
-Tauri currently supports development and distribution on the following platforms:
+Prereqs: Android Studio or command-line SDK, Java 17, and env vars set.
 
-| Platform   | Versions                                                                                                        |
-| :--------- | :-------------------------------------------------------------------------------------------------------------- |
-| Windows    | 7 and above                                                                                                     |
-| macOS      | 10.15 and above                                                                                                 |
-| Linux      | webkit2gtk 4.0 for Tauri v1 (for example Ubuntu 18.04). webkit2gtk 4.1 for Tauri v2 (for example Ubuntu 22.04). |
-| iOS/iPadOS | 9 and above                                                                                                     |
-| Android    | 7 and above (currently 8 and above)                                                                             |
+# Build:
+```bash
+pnpm tauri android build
+```
+# Run on device/emulator:
+```bash
+pnpm tauri android dev
+```
 
-## Contributing
+---
 
-Before you start working on something, it's best to check if there is an existing issue first. It's also a good idea to stop by the Discord server and confirm with the team if it makes sense or if someone else is already working on it.
+### 🍎 Build (iOS)
 
-Please make sure to read the [Contributing Guide](./.github/CONTRIBUTING.md) before making a pull request.
+Prereqs (macOS): Xcode 15+, Command Line Tools, CocoaPods
 
-Thank you to everyone contributing to Tauri!
+Build:
 
-### Documentation
+pnpm tauri ios build
 
-Documentation in a polyglot system is a tricky proposition. To this end, we prefer to use inline documentation in the Rust & JS source code as much as possible. Check out the hosting repository for the documentation site for further information: <https://github.com/tauri-apps/tauri-docs>
+Run (simulator):
 
-## Partners
+pnpm tauri ios dev
 
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://crabnebula.dev" target="_blank">
-          <img src=".github/sponsors/crabnebula.svg" alt="CrabNebula" width="283">
-        </a>
-      </td>
-    </tr>
-  </tbody>
-</table>
 
-For the complete list of sponsors please visit our [website](https://tauri.app#sponsors) and [Open Collective](https://opencollective.com/tauri).
+---
 
-## Organization
+☕ Support the brew
 
-Tauri aims to be a sustainable collective based on principles that guide [sustainable free and open software communities](https://sfosc.org). To this end it has become a Programme within the [Commons Conservancy](https://commonsconservancy.org/), and you can contribute financially via [Open Collective](https://opencollective.com/tauri).
+<a href="https://buymeacoffee.com/chirv">
+  <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=🎃&slug=chirv&button_colour=FF813F&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" alt="Buy Me A Coffee" />
+  </a>
+  ---
 
-## Licenses
-
-Code: (c) 2015 - Present - The Tauri Programme within The Commons Conservancy.
-
-MIT or MIT/Apache 2.0 where applicable.
-
-Logo: CC-BY-NC-ND
-
-- Original Tauri Logo Designs by [Alve Larsson](https://alve.io/), [Daniel Thompson-Yvetot](https://github.com/nothingismagick) and [Guillaume Chau](https://github.com/akryum)
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ftauri-apps%2Ftauri.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Ftauri-apps%2Ftauri?ref=badge_large)
+  <p align="center">🦇🖤 Thanks for visiting! The spirits whisper: <em>“Come back soon…”</em> 🖤🦇</p>

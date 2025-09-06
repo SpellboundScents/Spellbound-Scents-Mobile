@@ -1,0 +1,39 @@
+# License Notice
+
+This repository is based on and includes code from the Tauri 2 project,
+which is licensed under the MIT and Apache-2.0 licenses. Portions of this
+project are therefore covered by those licenses as required.
+
+---
+
+## Tauri License (MIT OR Apache-2.0)
+
+MIT License and Apache License, Version 2.0 apply to all upstream Tauri
+source code included in this repository. For details, see:
+
+- https://github.com/tauri-apps/tauri/blob/dev/LICENSE-MIT
+- https://github.com/tauri-apps/tauri/blob/dev/LICENSE-APACHE
+
+---
+
+## Spellbound Scents Wax Co. App License
+
+© 2025 Spellbound Scents Wax Co. All Rights Reserved.
+
+The original source code, branding, artwork, assets, images, and games
+developed specifically for the Spellbound Scents Wax Co. application are
+the exclusive property of Spellbound Scents Wax Co. and may not be copied,
+modified, distributed, or used without prior written permission.
+
+Permission is hereby granted to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the software *only for the
+portions covered under Tauri’s MIT/Apache-2.0 license*. This does not
+extend to Spellbound Scents Wax Co. proprietary assets, branding, or
+creative works included in this repository.
+
+---
+
+## Summary
+
+- Tauri framework code → MIT/Apache-2.0 (open source)
+- Spellbound Scents Wax Co. branding, assets, and game logic → All Rights Reserved
