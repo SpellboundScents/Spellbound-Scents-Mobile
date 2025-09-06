@@ -25,9 +25,9 @@
     "example:api:dev": "pnpm run --filter \"api\" tauri dev"
   },
   "devDependencies": {
-    "prettier": "^3.5.3"
+    "prettier": "^3.6.2"
   },
-  "packageManager": "pnpm@10.12.1",
+  "packageManager": "pnpm@10.15.1",
   "pnpm": {
     "overrides": {
       "brace-expansion@<4.0.1": ">=4.0.1",
@@ -39,5 +39,8 @@
       "esbuild",
       "workerd"
     ]
+  },
+  "dependencies": {
+    "pnpm": "^10.15.1"
   }
 }
