@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spellbound Scents</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      background: url("./landing_background.png") center/cover no-repeat;
+      font-family: system-ui, sans-serif;
+      position: relative;
+    }
+
+    header {
+      margin-top: 20px;
+      margin-bottom: 32px;
+    }
+
+    header img {
+      max-width: 65%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: 32px; /* spacing between buttons */
+      align-items: center;
+    }
+
+    .btn {
+      border: none;
+      background: none;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .btn img {
+      display: block;
+      width: 200px; /* adjust button size */
+      height: auto;
+    }
+
+    /* Social buttons pinned bottom corners with equal inset */
+    .social-left,
+    .social-right {
+      position: absolute;
+      bottom: 20px;
+    }
+
+    .social-left {
+      left: 20px;
+    }
+
+    .social-right {
+      right: 20px;
+    }
+
+    .social-left img,
+    .social-right img {
+      width: 48px; /* adjust social icon size */
+      height: auto;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Logo text at top -->
+  <header>
+    <img src="./logo_text.png" alt="Spellbound Scents Logo">
+  </header>
+
+  <main>
+    <!-- App buttons -->
+    <a class="btn" href="store.html">
+      <img src="./buttons/shop.png" alt="Shop">
+    </a>
+    <a class="btn" href="play.html">
+      <img src="./buttons/play.png" alt="Play">
+    </a>
+    <a class="btn" href="settings.html">
+      <img src="./buttons/settings.png" alt="Settings">
+    </a>
+    <a class="btn" href="about.html">
+      <img src="./buttons/about.png" alt="About">
+    </a>
+  </main>
+
+  <!-- Social links in corners with equal inset -->
+  <a class="social-left" href="https://facebook.com/spellboundscentswax" target="_blank" rel="noreferrer">
+    <img src="./buttons/facebook.png" alt="Facebook">
+  </a>
+  <a class="social-right" href="https://youtube.com/@nikkiswaxdiary?si=YyiOjEsDJ1pQqdMG" target="_blank" rel="noreferrer">
+    <img src="./buttons/youtube.png" alt="YouTube">
+  </a>
+</body>
+</html>
