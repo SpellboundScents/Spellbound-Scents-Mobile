@@ -1,4 +1,5 @@
-# 🎃 Spellbound Scents App — *coming soon!* 🕯️✨
+## 🎃 Spellbound Scents App 
+# *Coming Soon!* 🕯️✨
 
 <img src="public/logo.png" alt="Spellbound Scents" width="180" />
 
@@ -61,22 +62,20 @@ pnpm tauri android dev
 
 Prereqs (macOS): Xcode 15+, Command Line Tools, CocoaPods
 
-Build:
-
+# Build:
+```bash
 pnpm tauri ios build
-
-Run (simulator):
-
+```
+# Run (simulator):
+```bash
 pnpm tauri ios dev
-
+```
 
 ---
 
-☕ Support the brew
+## ☕ Support the brew
 
-<a href="https://buymeacoffee.com/chirv">
-  <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=🎃&slug=chirv&button_colour=FF813F&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" alt="Buy Me A Coffee" />
-  </a>
+[🎃 Buy me a coffee](https://buymeacoffee.com/chirv)
   ---
 
   <p align="center">🦇🖤 Thanks for visiting! The spirits whisper: <em>“Come back soon…”</em> 🖤🦇</p>
