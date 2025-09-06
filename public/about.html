@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>About • Spellbound Scents</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: url("landing_background.png") no-repeat center center;
+        background-size: cover;
+        font-family: system-ui, Segoe UI, sans-serif;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 16px;
+        padding: 24px;
+        max-width: 600px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        text-align: center;
+      }
+
+      .crispy-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 64px;
+        height: 64px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+      }
+      .crispy-btn img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.2s ease;
+      }
+      .crispy-btn:hover img { transform: scale(1.1); }
+
+      /* Modal */
+      .modal-backdrop {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,.45);
+        display: none; /* toggled via .show */
+        align-items: center; justify-content: center;
+        z-index: 1000;
+      }
+      .modal-backdrop.show { display: flex; }
+      .modal {
+        width: min(92vw, 480px);
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 12px 36px rgba(0,0,0,.35);
+        padding: 20px;
+      }
+      .modal header {
+        display: flex; align-items: center; justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .modal h2 { font-size: 1.1rem; margin: 0; }
+      .modal button.close {
+        border: 0; background: transparent; font-size: 1.4rem; cursor: pointer;
+      }
+      .wad-grid {
+        display: grid; gap: 12px;
+        grid-template-columns: 1fr;
+      }
+      .wad-btn {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 2px solid #222;
+        background: linear-gradient(180deg,#fff,#f7f7f7);
+        box-shadow: 0 3px 0 #222;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: left;
+      }
+      .wad-btn:active { transform: translateY(1px); box-shadow: 0 2px 0 #222; }
+      .wad-sub { display:block; font-size:.85rem; color:#666; font-weight: 400; }
+
+      .hint {
+        margin-top: 10px; color:#666; font-size:.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>About Spellbound Scents</h1>
+      <p>
+        Welcome to Spellbound Scents Wax Co.!<br />
+        We create kawaii, Halloween-themed wax melts with a magical twist. 🎃
+      </p>
+    </div>
+
+    <!-- Crispy launcher button -->
+    <button class="crispy-btn" id="crispy-launch" title="Play DOOM">
+      <img src="crispy.png" alt="Launch Crispy Doom" />
+    </button>
+
+    <!-- Modal (IWAD selector) -->
+    <div class="modal-backdrop" id="wad-modal" role="dialog" aria-modal="true" aria-labelledby="wad-title">
+      <div class="modal">
+        <header>
+          <h2 id="wad-title">Choose an IWAD</h2>
+          <button class="close" id="wad-close" aria-label="Close">×</button>
+        </header>
+        <div class="wad-grid" id="wad-list"></div>
+        <div class="hint">Tip: Most mods target Doom II — try <strong>freedoom2.wad</strong> first.</div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { invoke } from "https://esm.sh/@tauri-apps/api@2.0.0/core";
+
+      const modal = document.getElementById('wad-modal');
+      const wadList = document.getElementById('wad-list');
+      const closeBtn = document.getElementById('wad-close');
+      const openModal = () => modal.classList.add('show');
+      const closeModal = () => modal.classList.remove('show');
+
+      async function loadIwadsIntoModal() {
+        wadList.innerHTML = '';
+        let iwads = [];
+        try {
+          iwads = await invoke("list_choco_iwads");
+        } catch (_) {}
+        if (!Array.isArray(iwads) || iwads.length === 0) {
+          iwads = ["freedoom1.wad","freedoom2.wad"];
+        }
+
+        iwads.sort((a,b) => {
+          const order = { "freedoom2.wad": 0, "freedoom1.wad": 1 };
+          return (order[a] ?? 99) - (order[b] ?? 99) || a.localeCompare(b);
+        });
+
+        for (const name of iwads) {
+          const btn = document.createElement('button');
+          btn.className = 'wad-btn';
+          btn.innerHTML = `
+            <span>${name}</span>
+            <span class="wad-sub">${name.toLowerCase().includes('2') ? 'Doom II compatible' : 'Ultimate Doom compatible'}</span>
+          `;
+          btn.onclick = () => launchWith(name);
+          wadList.appendChild(btn);
+        }
+      }
+
+      async function launchWith(iwad) {
+        try {
+          const code = await invoke("launch_crispy_android", {
+            iwadFilename: iwad,
+            extraArgs: []
+          });
+          console.log("Crispy exited with code:", code);
+        } catch (err) {
+          console.error("Failed to launch Crispy Doom:", err);
+        } finally {
+          closeModal();
+        }
+      }
+
+      document.getElementById("crispy-launch").onclick = async () => {
+        await loadIwadsIntoModal();
+        openModal();
+      };
+
+      closeBtn.onclick = closeModal;
+      modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+      window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+    </script>
+  </body>
+</html>

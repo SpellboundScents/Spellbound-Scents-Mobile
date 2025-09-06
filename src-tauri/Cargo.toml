@@ -1,0 +1,22 @@
+[package]
+name = "spellbound-scents-mobile"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tauri = { version = "2", features = ["android"] }
+anyhow = "1"
+jni = "0.21"
+include_dir = "0.7"
+serde = { version = "1", features = ["derive"] }
+
+[build-dependencies]
+tauri-build = { version = "2" }
+
+[lib]
+name = "app"
+crate-type = ["cdylib", "rlib"]
+
+[profile.release]
+lto = true
+codegen-units = 1

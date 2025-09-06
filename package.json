@@ -40,4 +40,14 @@
       "workerd"
     ]
   }
+  {
+  "name": "crispy-tauri-android-starter",
+  "private": true,
+  "scripts": {
+    "android:dev": "tauri android dev",
+    "android:build": "tauri android build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": ">=2.0.0"
+  }
 }
