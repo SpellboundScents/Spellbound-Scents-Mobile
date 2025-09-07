@@ -22,9 +22,12 @@
     "build:cli": "pnpm run --filter \"@tauri-apps/cli\" build",
     "build:cli:debug": "pnpm run --filter \"@tauri-apps/cli\" build:debug",
     "test": "pnpm run -r test",
-    "example:api:dev": "pnpm run --filter \"api\" tauri dev"
+    "example:api:dev": "pnpm run --filter \"api\" tauri dev",
+    "android:dev": "tauri android dev",
+    "android:build": "tauri android build"
   },
   "devDependencies": {
+    "@tauri-apps/cli": ">=2.0.0",
     "prettier": "^3.6.2"
   },
   "packageManager": "pnpm@10.15.1",
@@ -39,15 +42,8 @@
       "esbuild",
       "workerd"
     ]
-  }
-  {
-  "name": "crispy-tauri-android-starter",
-  "private": true,
-  "scripts": {
-    "android:dev": "tauri android dev",
-    "android:build": "tauri android build"
   },
-  "devDependencies": {
-    "@tauri-apps/cli": ">=2.0.0"
+  "dependencies": {
+    "node": "^20.19.5"
   }
 }
