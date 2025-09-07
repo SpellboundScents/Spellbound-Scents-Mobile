@@ -29,3 +29,7 @@ fn main() {
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
+fn main() {
+  // Call into the library’s run() so desktop builds work too.
+  app::run();
+}

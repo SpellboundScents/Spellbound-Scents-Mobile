@@ -11,11 +11,15 @@ include_dir = "0.7"
 serde = { version = "1", features = ["derive"] }
 
 [build-dependencies]
-tauri-build = { version = "2" }
+tauri-build = { version = "2", features = [] }
 
 [lib]
 name = "app"
 crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "app-bin"
+path = "src-tauri/src/main.rs"
 
 [profile.release]
 lto = true
